@@ -1,30 +1,42 @@
 package telran.time;
 
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Friday13Range implements Iterable<Temporal> {
 	Temporal from;
 	Temporal to;
+
+	public Friday13Range(Temporal from, Temporal to) {
+		this.from = from;
+		this.to = to;
+	}
+
 	@Override
 	public Iterator<Temporal> iterator() {
-		
+
 		return new FridayIterator();
 	}
+
 	private class FridayIterator implements Iterator<Temporal> {
+		Temporal current = from;
+		NextFriday13 adjuster = new NextFriday13();
 
 		@Override
 		public boolean hasNext() {
-			// TODO Auto-generated method stub
-			return false;
+			return ChronoUnit.DAYS.between(current.with(adjuster), to) >= 0;
 		}
 
 		@Override
 		public Temporal next() {
-			// TODO Auto-generated method stub
-			return null;
+			while (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			return current = current.with(adjuster);
 		}
-		
+
 	}
 
 }
