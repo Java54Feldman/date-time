@@ -10,6 +10,9 @@ public class Friday13Range implements Iterable<Temporal> {
 	Temporal to;
 
 	public Friday13Range(Temporal from, Temporal to) {
+		if(ChronoUnit.DAYS.between(from, to) < 0) {
+			throw new IllegalArgumentException();
+		}
 		this.from = from;
 		this.to = to;
 	}

@@ -31,13 +31,14 @@ class DateTimeTest {
 		LocalDate expected = LocalDate.of(2024, 9, 13);
 		assertEquals(expected, date.with(new NextFriday13()));
 		assertEquals(LocalDate.of(2024, 12, 13), expected.with(new NextFriday13()));
-
+		
 	}
 
 	@Test
 	void friday13RangeTest() {
 		Temporal from = LocalDate.of(2023, 1, 1);
 		Temporal to = LocalDate.of(2023, 12, 31);
+		assertThrowsExactly(IllegalArgumentException.class, () -> new Friday13Range(to, from));
 		Friday13Range range = new Friday13Range(from, to);
 
 		Iterator<Temporal> iterator = range.iterator();

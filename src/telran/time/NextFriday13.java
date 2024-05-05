@@ -14,6 +14,10 @@ public class NextFriday13 implements TemporalAdjuster {
 		LocalDate nextFriday13 = LocalDate.of(year, month, 13);
 
 		while (nextFriday13.isBefore(date) || nextFriday13.getDayOfWeek() != DayOfWeek.FRIDAY) {
+			/*
+			 * V.R. It is better to use LocalDate functionality like plusMonths and
+			 * withDayOfMonth.
+			 */
 			month++;
 			if (month > 12) {
 				month = 1;
