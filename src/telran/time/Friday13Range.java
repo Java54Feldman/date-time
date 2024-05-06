@@ -1,5 +1,7 @@
 package telran.time;
 
+import java.time.DayOfWeek;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Iterator;
@@ -16,6 +18,14 @@ public class Friday13Range implements Iterable<Temporal> {
 		this.from = from;
 		this.to = to;
 	}
+	
+	public static Friday13Range getRange(Temporal from, Temporal to) {
+
+		if (compare(from, to) >= 0) {
+			throw new IllegalArgumentException("from Temporal must be less than to Temporal");
+		}
+		return new Friday13Range(from, to);
+	}
 
 	@Override
 	public Iterator<Temporal> iterator() {
@@ -23,13 +33,26 @@ public class Friday13Range implements Iterable<Temporal> {
 		return new FridayIterator();
 	}
 
+	private static int compare(Temporal t1, Temporal t2) {
+
+		return (int) (0 - ChronoUnit.DAYS.between(t1, t2));
+
+	}
+	
 	private class FridayIterator implements Iterator<Temporal> {
-		Temporal current = from;
-		NextFriday13 adjuster = new NextFriday13();
+		NextFriday13 nextFriday13Adjuster = new NextFriday13();
+		Temporal currentFriday13 = getFirstCurrent();
 
 		@Override
 		public boolean hasNext() {
-			return ChronoUnit.DAYS.between(current.with(adjuster), to) >= 0;
+			return compare(currentFriday13, to) <= 0;
+		}
+
+		private Temporal getFirstCurrent() {
+			return from.get(ChronoField.DAY_OF_MONTH) == 13
+					&& from.get(ChronoField.DAY_OF_WEEK)
+					== DayOfWeek.FRIDAY.getValue() ?
+							from : from.with(nextFriday13Adjuster);
 		}
 
 		@Override
@@ -37,7 +60,9 @@ public class Friday13Range implements Iterable<Temporal> {
 			while (!hasNext()) {
 				throw new NoSuchElementException();
 			}
-			return current = current.with(adjuster);
+			Temporal res = currentFriday13;
+			currentFriday13 = currentFriday13.with(nextFriday13Adjuster);
+			return res;
 		}
 
 	}
