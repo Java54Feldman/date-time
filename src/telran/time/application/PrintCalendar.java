@@ -35,18 +35,14 @@ public class PrintCalendar {
 	}
 
 	private static DayOfWeek getWeekDayFirst(String weekDayStr) throws Exception {
-		weekDayStr = weekDayStr.toUpperCase();
-		DayOfWeek result = switch (weekDayStr) {
-		case "SUNDAY" -> DayOfWeek.SUNDAY;
-		case "MONDAY" -> DayOfWeek.MONDAY;
-		case "TUESDAY" -> DayOfWeek.TUESDAY;
-		case "WEDNESDAY" -> DayOfWeek.WEDNESDAY;
-		case "THURSDAY" -> DayOfWeek.THURSDAY;
-		case "FRIDAY" -> DayOfWeek.FRIDAY;
-		case "SATURDAY" -> DayOfWeek.SATURDAY;
-		default -> throw new Exception("Incorrect week day");
-		};
-		return result;
+		// V.R. It is possible to get the same result without switch by the following way:
+		// in my HW was SWITCH
+		try {
+			return DayOfWeek.valueOf(weekDayStr.toUpperCase());			
+		} catch (IllegalArgumentException e) {
+			throw new Exception(weekDayStr.toUpperCase() + " is wrong day of week");
+		}
+
 	}
 
 	private static MonthYear getMonthYear(String[] args) throws Exception {
